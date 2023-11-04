@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Build Tool</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+
+<!-- Hero section -->
+<div class="text-center py-16 bg-blue-500 text-white">
+  <h1 class="text-4xl font-bold mb-2">Simplify Your Development Pipelines</h1>
+  <p class="text-xl">Execute build pipelines locally, with full control and no cloud dependencies.</p>
+</div>
+
+<!-- Example section -->
+<div class="container mx-auto px-6 py-10">
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-semibold mb-4 text-center">Example Pipeline Configuration</h2>
+    <div class="overflow-x-auto">
+      <pre class="p-4 bg-gray-100 rounded-lg">
+        <code class="text-sm">
+    name: myappbuild
+    description: Will support creating and test myapp
+    steps:
+    - name: Compile
+      image: golang:1.15
+      commands: |
+        echo 'Building myapp...'
+        go build -o ./bin/myapp ./cmd/myapp
+        
+    - name: RunTests
+      commands: |
+        echo 'Running tests...'
+        go test -v ./...
+        </code>
+      </pre>
+    </div>
+    <div class="overflow-x-auto">
+      <p class="text-gray-700 mt-4 py-4">Run the following command to see the magic happen <br><br>
+        <code class="bg-gray-100 rounded p-1 text-red-500 text-sm ">cmd-runnder steps.yaml --out=build.log</code> 
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Features section -->
+<div class="container mx-auto px-6 py-10">
+  <div class="text-center pb-6">
+    <h2 class="text-3xl font-semibold">Why Choose Our Pipelines Tool?</h2>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+    <!-- Feature 1 -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h3 class="text-2xl font-semibold mb-2">Easy Configuration</h3>
+      <p class="text-gray-700">YAML-based definitions make setting up your pipelines process a breeze.</p>
+    </div>
+    <!-- Feature 2 -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h3 class="text-2xl font-semibold mb-2">Docker Runtime</h3>
+      <p class="text-gray-700">Run your pipelines in any Docker environment, ensuring consistency and isolation.</p>
+    </div>
+    <!-- Feature 3 -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h3 class="text-2xl font-semibold mb-2">Flexibility</h3>
+      <p class="text-gray-700">Flexibility to execute various commands with custom parameters.</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

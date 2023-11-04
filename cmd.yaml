@@ -1,0 +1,17 @@
+name: microservice
+description: Will support creating and deploying a microserve
+steps:
+  - name: create
+    image: ubuntu:18.04
+    commands: |
+      #!/bin/bash
+      mkdir temp
+      cd temp
+      echo 'Dummy text1' > temp.txt
+      echo "create workload {name}  from env {env_name}"
+
+  - name: update
+    commands: |
+      whoami
+      echo 'Native command {appname}  from env {env_name}'
+  
