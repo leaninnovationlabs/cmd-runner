@@ -44,7 +44,6 @@ To run a specific step, specify the step name as an argument.
 ```bash
 cmd-runner cmd.yaml --appname=DEMO_APP --name=LUKE --step=setup
 ```
-```
 
 ## Installation and Build Instructions
 Before you begin, ensure you have met the following requirements:
