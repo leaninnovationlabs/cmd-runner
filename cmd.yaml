@@ -5,7 +5,7 @@ steps:
     commands: |
       #!/bin/bash
       echo 'Do the required setup'
-      echo "setup workload {name}"
+      echo "setup workload {appname}"
 
   - name: create
     image: ubuntu:18.04
@@ -14,7 +14,7 @@ steps:
       mkdir temp
       cd temp
       echo 'Dummy text1' > temp.txt
-      echo "create workload {name}  from env {env_name}"
+      echo "create workload {appname}  from env {env_name}"
 
   - name: update
     commands: |

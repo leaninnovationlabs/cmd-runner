@@ -36,13 +36,13 @@ Download the latest release from bin folder and add it to your path.
 You can run the command runner by passing the steps.yaml file and the parameters to be replaced in the commands.
 
 ```bash
-cmd-runner cmd.yaml --name=demouser --appname=demoapp
+cmd-runner cmd.yaml --appname=DEMO_APP --name=LUKE
 ```
 
 To run a specific step, specify the step name as an argument.
 
 ```bash
-cmd-runner cmd.yaml --name=demouser --step=setup
+cmd-runner cmd.yaml --appname=DEMO_APP --name=LUKE --step=setup
 ```
 ```
 
@@ -63,5 +63,5 @@ To build and run cmd-runner, follow these steps:
 
 ``` bash
 go build -o cmd-runner
-./cmd-runner steps.yaml --name=demouser --appname=demoapp
+./cmd-runner steps.yaml --name=LUKE --appname=DEMO_APP
 ```
