@@ -1,30 +1,6 @@
 # Project Title
 
 A brief description of what this project does and who it's for.
-
-## Installation Instructions
-
-Before you begin, ensure you have met the following requirements:
-* You have installed the latest version of [Go](https://golang.org/dl/).
-* You have a Windows/Linux/macOS machine.
-
-To install `cmd-runner`, follow these steps:
-
-## Linux and macOS:
-```bash
-git clone https://github.com/leaninnovationlabs/cmd-runner.git
-cd cmd-runner
-```
-
-## How to Build and Run
-To build and run cmd-runner, follow these steps:
-
-
-``` bash
-go build -o cmd-runner
-./cmd-runner steps.yaml --name=demouser --appname=demoapp
-```
-
 Replace steps.yaml with your own configuration file and provide the necessary flags as needed.
 
 
@@ -52,3 +28,24 @@ To use the sample configuration file, run the following command:
 cmd-runner cmd.yaml --name=demouser --appname=demoapp
 ```
 
+## Installation and Build Instructions
+Before you begin, ensure you have met the following requirements:
+* You have installed the latest version of [Go](https://golang.org/dl/).
+* You have a Windows/Linux/macOS machine.
+
+To install `cmd-runner`, follow these steps:
+
+## Linux and macOS:
+```bash
+git clone https://github.com/leaninnovationlabs/cmd-runner.git
+cd cmd-runner
+```
+
+## How to Build and Run
+To build and run cmd-runner, follow these steps:
+
+
+``` bash
+go build -o cmd-runner
+./cmd-runner steps.yaml --name=demouser --appname=demoapp
+```
