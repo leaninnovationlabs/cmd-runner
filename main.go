@@ -69,29 +69,12 @@ func combineCommands(commands string) string {
 	return strings.Join(combinedCommands, " && ")
 }
 
-func main() {
-	if len(os.Args) < 2 {
-		fmt.Println("Usage: go run main.go <path_to_yaml> --key=value [--out=log.txt]")
-		os.Exit(1)
-	}
-
-	// Load .env file
-	err := godotenv.Load()
-	if err != nil {
-		log.Println("Error loading .env file, continuing without it")
-	}
-
-	// Extract the YAML file argument.
-	yamlFilePath := os.Args[1]
-
-	// Initialize a logger to write to os.Stderr by default.
-	logger := log.New(os.Stderr, "", log.LstdFlags)
-
-	// Process the dynamic flags and check for an output file.
+func runSteps(logger *log.Logger, yamlFilePath string) {
 	dynamicFlags := make(map[string]string)
 	var outputFilePath string
 	var stepName string
 
+	// Process the dynamic flags and check for an output file.
 	for _, arg := range os.Args[2:] {
 		if strings.HasPrefix(arg, "--") {
 			keyValue := strings.SplitN(arg[2:], "=", 2)
@@ -114,12 +97,12 @@ func main() {
 
 	// If an output file is specified, change the logger to write to the given file.
 	if outputFilePath != "" {
-		// Ensure the directory structure exists.
 		dir := filepath.Dir(outputFilePath)
 		if err := os.MkdirAll(dir, os.ModePerm); err != nil {
 			logger.Fatalf("Failed to create directory structure for log file: %s", err)
 		}
 
+		// Ensure the directory structure exists.
 		outFile, err := os.Create(outputFilePath)
 		if err != nil {
 			logger.Fatalf("Error creating log file: %s", err)
@@ -144,7 +127,6 @@ func main() {
 	logger.Printf("Running task: %s\n", task.Name)
 	logger.Printf("Description: %s\n", task.Description)
 
-	// Execute the commands with dynamic flags replacement.
 	for _, step := range task.Steps {
 
 		var cmd *exec.Cmd
@@ -161,25 +143,27 @@ func main() {
 			if err != nil {
 				logger.Fatalf("Failed to pull Docker image: %s", err)
 			}
-			// Create a docker run command that mounts the current directory
+
 			dockerRunArgs := []string{"run", "--rm", "-v", fmt.Sprintf("%s:/%s", os.Getenv("PWD"), os.Getenv("PWD")), "-w", os.Getenv("PWD"), step.Image}
 
 			step.Commands = combineCommands(step.Commands)
 
-			// Parse the commands to run them inside the docker container
+			// Execute the commands with dynamic flags replacement.
 			for key, value := range dynamicFlags {
 				placeholder := fmt.Sprintf("{%s}", key)
 				step.Commands = strings.ReplaceAll(step.Commands, placeholder, value)
 				step.Commands = ExecuteCommands(step.Commands)
 			}
-			// Split the commands into lines and process them.
+
 			commands := strings.Split(step.Commands, "\n")
 			for _, cmdStr := range commands {
 				cmdStr = strings.TrimSpace(cmdStr)
 				if cmdStr == "" || strings.HasPrefix(cmdStr, "#") {
-					continue // Ignore empty lines and comments.
+					continue
 				}
 
+				// Create a docker run command that mounts the current directory
+				// Parse the commands to run them inside the docker container
 				dockerRunArgs = append(dockerRunArgs, "bash", "-c", cmdStr)
 				cmd = exec.Command("docker", dockerRunArgs...)
 				cmd.Stdout = logger.Writer()
@@ -188,31 +172,36 @@ func main() {
 				if err != nil {
 					logger.Printf("Error executing command '%s': %s\n", cmdStr, err)
 				}
-				// Clean the arguments for the next command to avoid repetition.
+
 				dockerRunArgs = dockerRunArgs[:8]
 			}
 		} else {
-			logger.Printf("Using host only\n")
+			logger.Printf("Using host machine to run commands\n")
 			commands := strings.Split(step.Commands, "\n")
+
 			for _, cmdStr := range commands {
 				cmdStr = strings.TrimSpace(cmdStr)
+				// Ignore empty lines and comments.
 				if cmdStr == "" || strings.HasPrefix(cmdStr, "#") {
-					continue // Ignore empty lines and comments.
+					continue
 				}
 
-				// Perform replacements in the command string.
+				// Clean the arguments for the next command to avoid repetition.
+				// Split the commands into lines and process them.
+				// Ignore empty lines and comments.
 				for key, value := range dynamicFlags {
 					placeholder := fmt.Sprintf("{%s}", key)
+					// Perform replacements in the command string.
 					cmdStr = strings.ReplaceAll(cmdStr, placeholder, value)
 					cmdStr = ExecuteCommands(cmdStr)
 				}
 
-				// Execute the command.
 				cmdArgs := strings.Fields(cmdStr)
 				if len(cmdArgs) == 0 {
 					continue
 				}
 
+				// Execute the commands with dynamic flags replacement.
 				cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
 				cmd.Stdout = logger.Writer()
 				cmd.Stderr = logger.Writer()
@@ -224,4 +213,25 @@ func main() {
 		}
 
 	}
+}
+
+func main() {
+	if len(os.Args) < 2 {
+		fmt.Println("Usage: go run main.go <path_to_yaml> --key=value [--out=log.txt]")
+		os.Exit(1)
+	}
+
+	// Load .env file
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("Error loading .env file, continuing without it")
+	}
+
+	// Extract the YAML file argument.
+	yamlFilePath := os.Args[1]
+
+	// Initialize a logger to write to os.Stderr by default.
+	logger := log.New(os.Stderr, "", log.LstdFlags)
+
+	runSteps(logger, yamlFilePath)
 }

@@ -39,6 +39,13 @@ You can run the command runner by passing the steps.yaml file and the parameters
 cmd-runner cmd.yaml --name=demouser --appname=demoapp
 ```
 
+To run a specific step, specify the step name as an argument.
+
+```bash
+cmd-runner cmd.yaml --name=demouser --step=setup
+```
+```
+
 ## Installation and Build Instructions
 Before you begin, ensure you have met the following requirements:
 * You have installed the latest version of [Go](https://golang.org/dl/).
