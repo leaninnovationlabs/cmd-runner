@@ -69,47 +69,7 @@ func combineCommands(commands string) string {
 	return strings.Join(combinedCommands, " && ")
 }
 
-func runSteps(logger *log.Logger, task CommandTask) {
-	dynamicFlags := make(map[string]string)
-	var outputFilePath string
-	var stepName string
-
-	// Process the dynamic flags and check for an output file.
-	for _, arg := range os.Args[2:] {
-		if strings.HasPrefix(arg, "--") {
-			keyValue := strings.SplitN(arg[2:], "=", 2)
-			if len(keyValue) != 2 {
-				logger.Printf("Invalid flag format: %s\n", arg)
-				os.Exit(1)
-			}
-			if keyValue[0] == "out" {
-				outputFilePath = keyValue[1]
-			} else {
-				dynamicFlags[keyValue[0]] = keyValue[1]
-			}
-
-			if keyValue[0] == "step" {
-				logger.Printf("Step to execute: %s\n", keyValue[1])
-				stepName = keyValue[1]
-			}
-		}
-	}
-
-	// If an output file is specified, change the logger to write to the given file.
-	if outputFilePath != "" {
-		dir := filepath.Dir(outputFilePath)
-		if err := os.MkdirAll(dir, os.ModePerm); err != nil {
-			logger.Fatalf("Failed to create directory structure for log file: %s", err)
-		}
-
-		// Ensure the directory structure exists.
-		outFile, err := os.Create(outputFilePath)
-		if err != nil {
-			logger.Fatalf("Error creating log file: %s", err)
-		}
-		defer outFile.Close()
-		logger.SetOutput(outFile)
-	}
+func runSteps(logger *log.Logger, task CommandTask, dynamicFlags map[string]string, stepName string) {
 
 	logger.Printf("Running task: %s\n", task.Name)
 	logger.Printf("Description: %s\n", task.Description)
@@ -233,5 +193,46 @@ func main() {
 		logger.Fatalf("Error parsing YAML file: %s", err)
 	}
 
-	runSteps(logger, task)
+	dynamicFlags := make(map[string]string)
+	var outputFilePath string
+	var stepName string
+
+	// Process the dynamic flags and check for an output file.
+	for _, arg := range os.Args[2:] {
+		if strings.HasPrefix(arg, "--") {
+			keyValue := strings.SplitN(arg[2:], "=", 2)
+			if len(keyValue) != 2 {
+				logger.Printf("Invalid flag format: %s\n", arg)
+				os.Exit(1)
+			}
+			if keyValue[0] == "out" {
+				outputFilePath = keyValue[1]
+			} else {
+				dynamicFlags[keyValue[0]] = keyValue[1]
+			}
+
+			if keyValue[0] == "step" {
+				logger.Printf("Step to execute: %s\n", keyValue[1])
+				stepName = keyValue[1]
+			}
+		}
+	}
+
+	// If an output file is specified, change the logger to write to the given file.
+	if outputFilePath != "" {
+		dir := filepath.Dir(outputFilePath)
+		if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+			logger.Fatalf("Failed to create directory structure for log file: %s", err)
+		}
+
+		// Ensure the directory structure exists.
+		outFile, err := os.Create(outputFilePath)
+		if err != nil {
+			logger.Fatalf("Error creating log file: %s", err)
+		}
+		defer outFile.Close()
+		logger.SetOutput(outFile)
+	}
+
+	runSteps(logger, task, dynamicFlags, stepName)
 }
