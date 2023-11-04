@@ -69,7 +69,20 @@ func combineCommands(commands string) string {
 	return strings.Join(combinedCommands, " && ")
 }
 
-func runSteps(logger *log.Logger, task CommandTask, dynamicFlags map[string]string, stepName string) {
+func runSteps(logger *log.Logger, yamlFilePath string, dynamicFlags map[string]string, stepName string) {
+
+	// Read the YAML file.
+	yamlFile, err := os.ReadFile(yamlFilePath)
+	if err != nil {
+		logger.Fatalf("Error reading YAML file: %s", err)
+	}
+
+	// Parse the YAML.
+	var task CommandTask
+	err = yaml.Unmarshal(yamlFile, &task)
+	if err != nil {
+		logger.Fatalf("Error parsing YAML file: %s", err)
+	}
 
 	logger.Printf("Running task: %s\n", task.Name)
 	logger.Printf("Description: %s\n", task.Description)
@@ -180,19 +193,6 @@ func main() {
 	// Initialize a logger to write to os.Stderr by default.
 	logger := log.New(os.Stderr, "", log.LstdFlags)
 
-	// Read the YAML file.
-	yamlFile, err := os.ReadFile(yamlFilePath)
-	if err != nil {
-		logger.Fatalf("Error reading YAML file: %s", err)
-	}
-
-	// Parse the YAML.
-	var task CommandTask
-	err = yaml.Unmarshal(yamlFile, &task)
-	if err != nil {
-		logger.Fatalf("Error parsing YAML file: %s", err)
-	}
-
 	dynamicFlags := make(map[string]string)
 	var outputFilePath string
 	var stepName string
@@ -234,5 +234,5 @@ func main() {
 		logger.SetOutput(outFile)
 	}
 
-	runSteps(logger, task, dynamicFlags, stepName)
+	runSteps(logger, yamlFilePath, dynamicFlags, stepName)
 }
