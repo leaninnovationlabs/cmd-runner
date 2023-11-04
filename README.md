@@ -22,7 +22,7 @@ To build and run cmd-runner, follow these steps:
 
 ``` bash
 go build -o cmd-runner
-./cmd-runner steps.yaml --name=Value1 --appname=Value2
+./cmd-runner steps.yaml --name=demouser --appname=demoapp
 ```
 
 Replace steps.yaml with your own configuration file and provide the necessary flags as needed.
@@ -49,6 +49,6 @@ steps:
 To use the sample configuration file, run the following command:
 
 ```bash
-./cmd-runner cmd.yaml --name=Microservice1 --appname=MyApp
+./cmd-runner cmd.yaml --name=demouser --appname=demoapp
 ```
 
