@@ -1,6 +1,12 @@
 name: microservice
 description: Will support creating and deploying a microserve
 steps:
+  - name: setup
+    commands: |
+      #!/bin/bash
+      echo 'Do the required setup'
+      echo "setup workload {name}"
+
   - name: create
     image: ubuntu:18.04
     commands: |

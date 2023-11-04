@@ -1,6 +1,6 @@
 # Project Title
+Command runner lets you run a sequence of commands in a container or host machine. It is useful for running a sequence of commands in a CI/CD pipeline or doing setup locally.
 
-A brief description of what this project does and who it's for.
 Replace steps.yaml with your own configuration file and provide the necessary flags as needed.
 
 
@@ -13,13 +13,23 @@ sample-steps.yaml:
 name: microservice
 description: Will support creating and deploying a microservice
 steps:
+  - name: setup
+    commands: |
+      echo 'Setup Dev Environment'
+      #! Setup Virtual Environment
+      python -m venv ./venv
+      source ./venv/bin/activate
+      pip install --upgrade pip
+      pip install -r requirements.txt      
   - name: create
     image: ubuntu:18.04
     commands: |
-      echo 'Creating workload {name}'
+      echo 'Creating service {name}'
+      helm create {appname}
   - name: update
     commands: |
-      echo 'Hello world {appname}'
+      echo 'Update service {name}'
+      helm upgrade --install {appname}
 ```
 
 To use the sample configuration file, run the following command:

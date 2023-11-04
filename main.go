@@ -106,6 +106,7 @@ func main() {
 			}
 
 			if keyValue[0] == "step" {
+				logger.Printf("Step to execute: %s\n", keyValue[1])
 				stepName = keyValue[1]
 			}
 		}
@@ -145,13 +146,13 @@ func main() {
 
 	// Execute the commands with dynamic flags replacement.
 	for _, step := range task.Steps {
-		logger.Printf("Executing step: %s\n", step.Name)
 
 		var cmd *exec.Cmd
 
 		if stepName != "" && step.Name != stepName {
 			continue
 		}
+		logger.Printf("Executing step: %s\n", step.Name)
 
 		if step.Image != "" {
 			logger.Printf("Using image: %s\n", step.Image)
