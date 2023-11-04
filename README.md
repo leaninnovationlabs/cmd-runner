@@ -49,6 +49,6 @@ steps:
 To use the sample configuration file, run the following command:
 
 ```bash
-./cmd-runner cmd.yaml --name=demouser --appname=demoapp
+cmd-runner cmd.yaml --name=demouser --appname=demoapp
 ```
 
