@@ -1,4 +1,4 @@
-# Project Title
+# COMMAND-RUNNER
 Command runner lets you run a sequence of commands in a container or host machine. Useful to run a sequence of commands in a CI/CD pipeline or doing setup locally.
 
 ## Sample Files
